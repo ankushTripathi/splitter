@@ -1378,10 +1378,10 @@
     "69": {
       "events": {},
       "links": {},
-      "address": "0xd24c5ed3f2e3a452f3a9c5290e942f50f6501f34",
-      "transactionHash": "0xe11a3a530bc8ba8ffedffba8e9ba00d9eecc0e05ed4220717df61c1655acafa8"
+      "address": "0x05a275c20a51b90b9ee35ef6364cb2e3839f09ed",
+      "transactionHash": "0xfea38e34e4dba80f026a624bab00a5c6eb831914f2f540b065a121035bfbe18e"
     }
   },
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-10-17T18:54:40.752Z"
+  "updatedAt": "2018-10-18T05:48:25.868Z"
 }
