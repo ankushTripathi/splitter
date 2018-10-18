@@ -2,51 +2,39 @@ pragma solidity ^0.4.23;
 
 contract Splitter{
 
+    mapping(address => uint)balances;
+    address owner;
 
-    address public alice;
-    address public bob;
-    address public carol;
-    
-    bool turn;    //determines whose turn is it to get extra in case of odd amount 
-
-    constructor (address _alice,address _bob,address _carol) public payable {
+    constructor () public payable{
         
-        alice = _alice;
-        bob = _bob;
-        carol = _carol;
+        owner = msg.sender;
     }
 
-    modifier isSet(){
+    function split(address person1,address person2) public payable {
 
-        require(alice != 0 && bob != 0 && carol != 0,"alice,bob and carol's account must be set for this action");
-        _;
-    }
-
-    modifier isAlice(){
-
-        require(msg.sender == alice, "only alice can make this call");
-        _;
-    }
-
-    function setUsers(address _alice,address _bob,address _carol) public{
-
-        alice = _alice;
-        bob = _bob;
-        carol = _carol;
-    }
-
-    function split() public isSet isAlice payable {
-
-        require(msg.value > 0 wei, "ether > 0 required for split");
+        require(person1!=0 && person2!=0);
+        require(msg.value > 0 wei);
 
         uint sendAmount = msg.value/2;
 
-        address(bob).transfer(sendAmount + ((msg.value%2 != 0 && turn)? 1 wei : 0 wei));
-        address(carol).transfer(sendAmount + ((msg.value%2 != 0 && !turn)? 1 wei : 0 wei));
+        balances[person1] += sendAmount + ((msg.value%2 != 0)? 1 wei : 0 wei);
+        balances[person2] += sendAmount;
 
-        if(msg.value%2 != 0)
-            turn = !turn;
     }
 
-    function () public payable {}
+    function withdraw() public {
+
+        require(balances[msg.sender] > 0);
+        uint sendAmount  = balances[msg.sender];
+
+        balances[msg.sender] = 0;
+        msg.sender.transfer(sendAmount);
+    }
+
+    function killSwitch() public returns (bool){
+
+        require(msg.sender == owner);
+        selfdestruct(owner);
+        return true;
+    }
 }
