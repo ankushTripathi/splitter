@@ -8,9 +8,9 @@ module.exports = function(deployer,network,accounts) {
     }
     else{
         
-        const alice  = accounts[0];
-        const bob  = accounts[1];
-        const carol = accounts[2];
+        const alice  = accounts[3];
+        const bob  = accounts[4];
+        const carol = accounts[5];
         deployer.deploy(Splitter,alice,bob,carol);
     }
 };

@@ -6,8 +6,10 @@ contract Splitter{
     address public alice;
     address public bob;
     address public carol;
+    
+    bool turn;    //determines whose turn is it to get extra in case of odd amount 
 
-    constructor (address _alice,address _bob,address _carol) public {
+    constructor (address _alice,address _bob,address _carol) public payable {
         
         alice = _alice;
         bob = _bob;
@@ -26,11 +28,6 @@ contract Splitter{
         _;
     }
 
-    function getContractBalance() public view returns(uint){
-
-        return address(this).balance;
-    }
-
     function setUsers(address _alice,address _bob,address _carol) public{
 
         alice = _alice;
@@ -38,19 +35,17 @@ contract Splitter{
         carol = _carol;
     }
 
-    function getUserBalances() public view isSet returns(uint aliceBalance,uint bobBalance,uint carolBalance){
-
-        return (address(alice).balance,address(bob).balance,address(carol).balance);
-    }
-
     function split() public isSet isAlice payable {
 
-        require(msg.value > 0 ether, "ether > 0 required for split");
+        require(msg.value > 0 wei, "ether > 0 required for split");
 
         uint sendAmount = msg.value/2;
 
-        address(bob).transfer(sendAmount);
-        address(carol).transfer(sendAmount);
+        address(bob).transfer(sendAmount + ((msg.value%2 != 0 && turn)? 1 wei : 0 wei));
+        address(carol).transfer(sendAmount + ((msg.value%2 != 0 && !turn)? 1 wei : 0 wei));
+
+        if(msg.value%2 != 0)
+            turn = !turn;
     }
 
     function () public payable {}
